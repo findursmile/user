@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import PlaceHolder from '../assets/placeholder.svg';
 
 export default function LazyImage(props: {src: string}) {
     const [loaded, setLoaded] = useState(false);
@@ -12,7 +13,7 @@ export default function LazyImage(props: {src: string}) {
 
         const onScrollCallback = () => {
             const rec = imgEl.current?.getBoundingClientRect();
-            if (rec && rec.top > 0 && rec.top < window.innerHeight + 100) {
+            if (rec && rec.top < window.innerHeight + 100) {
                 setLoaded(true);
                 if (imgEl.current) {
                     imgEl.current.style.animationPlayState = "running";
@@ -32,6 +33,6 @@ export default function LazyImage(props: {src: string}) {
         <img
             className={"rounded object-cover max-w-full " + (loaded ? '' : 'min-h-40')}
             ref={imgEl}
-            src={loaded ? props.src : 'https://placehold.co/400'} />
+            src={loaded ? props.src : PlaceHolder } />
     );
 }
