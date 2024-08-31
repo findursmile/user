@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import LazyImage from "./LazyImage";
 
 export interface IMAGE {
     id: string,
@@ -8,26 +9,31 @@ export interface IMAGE {
 function Gallery() {
     const [pageNo, setPageNo] = useState(1);
     const [hasMore, setHasMore] = useState(true);
-    let images: IMAGE[] = [];
+    let images = useRef([]);
     const [chunkedImages, setChunkedImages] = useState<IMAGE[][]>([]);
     const cols = 4;
     const limit = 25;
-    useEffect(() => {
+
+    const getImages = () => {
         fetch('http://localhost:8080/events/event:z6p1fcpooy3fh7oghien/images?page=' + pageNo)
             .then(async (res) => {
                 const content = await res.json();
                 if (content.images.length < limit) {
                     setHasMore(false);
                 }
-                images = images.concat(content.images);
-                let chunkSize = Math.ceil(images.length / cols);
+                images.current = images.current.concat(content.images);
+                let chunkSize = Math.ceil(images.current.length / cols);
                 const chunkedArray = Array.from(
                     {length: cols},
-                    (_, i) => images.slice(i * chunkSize, i * chunkSize + chunkSize)
+                    (_, i) => images.current.slice(i * chunkSize, i * chunkSize + chunkSize)
                 );
 
                 setChunkedImages(chunkedArray);
             });
+    }
+
+    useEffect(() => {
+        getImages();
     }, [pageNo]);
 
 
@@ -39,7 +45,7 @@ function Gallery() {
                         <div className="">
                             {images.map(img => {
                             return (<div className="pb-3 max-w-full" key={img.id}>
-                                <img className="rounded object-cover max-w-full" src={"http://localhost:8080/" + img.image_uri} />
+                                <LazyImage src={"http://localhost:8080/" + img.image_uri} />
                             </div>)})}
                         </div>
                     )
