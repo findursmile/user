@@ -51,7 +51,9 @@ function Gallery() {
                     )
                 })}
             </div>
-            { hasMore && <button className="p-2 bg-gray-800 text-white"  onClick={() => setPageNo(pageNo+1)}> Load More</button>}
+            <div className="text-center my-3">
+                { hasMore && <button className="px-6 py-2 bg-gray-800 rounded text-white hover:bg-gray-700 hover:text-gray-100"  onClick={() => setPageNo(pageNo+1)}> Load More</button>}
+            </div>
         </section>
     );
 }
