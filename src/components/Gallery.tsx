@@ -6,16 +6,30 @@ export interface IMAGE {
     image_uri: string,
 }
 
-function Gallery() {
+function Gallery({encodings: encodings}: {encodings?: number[][]}) {
     const [pageNo, setPageNo] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     let images = useRef([]);
     const [chunkedImages, setChunkedImages] = useState<IMAGE[][]>([]);
-    const cols = 4;
+    const cols = 6;
     const limit = 25;
 
     const getImages = () => {
-        fetch('http://localhost:8080/events/event:z6p1fcpooy3fh7oghien/images?page=' + pageNo)
+        const url = 'http://localhost:8080/events/event:6kfm772kak2al1a7vmec/images';
+        const params: {limit: number, page: number, encoding?: number[]} = {
+            page: pageNo,
+            limit
+        };
+        if (encodings && encodings.length) {
+            params.encoding = encodings[0];
+        }
+        fetch(url, {
+            method: "POST",
+            body: JSON.stringify(params),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
             .then(async (res) => {
                 const content = await res.json();
                 if (content.images.length < limit) {
@@ -33,13 +47,17 @@ function Gallery() {
     }
 
     useEffect(() => {
+        images.current = [];
+    }, [encodings]);
+
+    useEffect(() => {
         getImages();
-    }, [pageNo]);
+    }, [pageNo, encodings]);
 
 
     return (
-        <section className="container mx-auto mt-5">
-            <div className="grid grid-cols-4 gap-4">
+        <section className="mt-5">
+            <div className="grid grid-cols-6 gap-4">
                 {chunkedImages.map(images => {
                     return (
                         <div className="">

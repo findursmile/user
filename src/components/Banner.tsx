@@ -1,6 +1,6 @@
 import { CalendarIcon } from '@heroicons/react/24/outline'
 
-function Banner() {
+function Banner({onViewChange}: {onViewChange: Function}) {
   return (
     <>
         <section
@@ -12,6 +12,10 @@ function Banner() {
                     <CalendarIcon className="w-4 inline-block mr-1"/> Date goes here
                 </div>
                 <h3 className="text-2xl font-bold">Event Name Goes Here</h3>
+                <div className="">
+                    <button onClick={() => onViewChange("all")}> View All</button>
+                    <button onClick={() => onViewChange("mine")}> View Mine</button>
+                </div>
             </div>
         </section>
     </>
