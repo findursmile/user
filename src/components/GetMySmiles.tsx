@@ -1,8 +1,31 @@
 import { ArrowUpTrayIcon } from "@heroicons/react/16/solid";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 export default function GetMySmiles({onGetEncodings}: {onGetEncodings: Function}) {
     const [loading, setLoading] = useState(false);
+    const videoElement = useRef<HTMLVideoElement>(null);
+
+    const previewCam = async () => {
+        if (!navigator.mediaDevices) {
+            return;
+        }
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: false,
+                video: true,
+            });
+
+            if (videoElement.current) {
+                videoElement.current.srcObject = stream;
+            }
+        } catch (e) {
+            console.log(e);
+        };
+    }
+
+    useEffect(() => {
+        previewCam();
+    }, []);
 
     const getFaceEncodings = (e: ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files?.length) {
@@ -31,6 +54,9 @@ export default function GetMySmiles({onGetEncodings}: {onGetEncodings: Function}
             <div className="w-48 h-48 mx-auto relative bg-blue-500 rounded-full flex justify-center items-center p-2 my-10">
                     <span className="text-white font-bold">Allow Camera Access</span>
                     <span className="absolute rounded-full w-48 h-48 bg-blue-100 top-0 left-0 scale-125 z-[-1] animate-ping"></span>
+                    <div className="absolute w-48 h-48 top-0 left-0">
+                    </div>
+                <video ref={videoElement} id="webcamVideo" className="w-48 h-48"></video>
             </div>
             <div className="w-64 relative mx-auto pt-5 pb-3 text-gray-400">
                 <span className="text-sm px-2 bg-white rounded-full">or</span>
@@ -55,6 +81,7 @@ export default function GetMySmiles({onGetEncodings}: {onGetEncodings: Function}
                     name="imageToSeach"
                     id="imageToSeach"
                     disabled={loading}
+                    accept="image/jpeg, image/jpg"
                     onChange={getFaceEncodings}
                 />
             </div>
