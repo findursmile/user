@@ -4,6 +4,7 @@ import Banner from './components/Banner'
 import Gallery from './components/Gallery'
 import GetMySmiles from './components/GetMySmiles'
 import { useState } from 'react'
+import { Outlet } from 'react-router-dom'
 
 function App() {
     const [viewMode, setViewMode] = useState('all');
@@ -12,13 +13,7 @@ function App() {
     <>
         <Header />
         <main>
-            <section className="container mx-auto">
-                <Banner onViewChange={(t:string) => setViewMode(t)}/>
-            </section>
-            <section className="container mx-auto">
-                { viewMode === "mine" ? <GetMySmiles onGetEncodings={setEncodings} /> : ''}
-                <Gallery encodings={encodings} />
-            </section>
+            <Outlet />
         </main>
     </>
   )

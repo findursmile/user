@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import LazyImage from "./LazyImage";
+import { useParams } from "react-router-dom";
 
 export interface IMAGE {
     id: string,
@@ -7,6 +7,7 @@ export interface IMAGE {
 }
 
 function Gallery({encodings: encodings}: {encodings?: number[][]}) {
+    const urlParams = useParams();
     const [pageNo, setPageNo] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     let images = useRef([]);
@@ -15,7 +16,7 @@ function Gallery({encodings: encodings}: {encodings?: number[][]}) {
     const limit = 25;
 
     const getImages = () => {
-        const url = 'http://localhost:8080/events/event:6kfm772kak2al1a7vmec/images';
+        const url = `http://localhost:8080/events/${urlParams.eventId}/images`;
         const params: {limit: number, page: number, encoding?: number[]} = {
             page: pageNo,
             limit
@@ -36,11 +37,15 @@ function Gallery({encodings: encodings}: {encodings?: number[][]}) {
                     setHasMore(false);
                 }
                 images.current = images.current.concat(content.images);
-                let chunkSize = Math.ceil(images.current.length / cols);
-                const chunkedArray = Array.from(
-                    {length: cols},
-                    (_, i) => images.current.slice(i * chunkSize, i * chunkSize + chunkSize)
-                );
+                const chunkedArray = new Array(cols);
+
+                images.current.forEach((img, i) => {
+                    const index = i%cols;
+                    if (!chunkedArray[index]) {
+                        chunkedArray[index] = [];
+                    }
+                    chunkedArray[index].push(img);
+                });
 
                 setChunkedImages(chunkedArray);
             });
@@ -48,6 +53,7 @@ function Gallery({encodings: encodings}: {encodings?: number[][]}) {
 
     useEffect(() => {
         images.current = [];
+        setPageNo(1);
     }, [encodings]);
 
     useEffect(() => {
@@ -62,9 +68,11 @@ function Gallery({encodings: encodings}: {encodings?: number[][]}) {
                     return (
                         <div className="">
                             {images.map(img => {
-                            return (<div className="pb-3 max-w-full" key={img.id}>
-                                <LazyImage src={"http://localhost:8080/" + img.image_uri} />
-                            </div>)})}
+                                return (<div className="pb-3 max-w-full" key={img.id}>
+                                    <img
+                                        className={"rounded object-cover max-w-full " }
+                                        src={"http://localhost:8080/" + img.image_uri} />
+                                </div>)})}
                         </div>
                     )
                 })}
