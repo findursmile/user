@@ -9,7 +9,12 @@ export default function EventDetail() {
     return (
         <>
             <section className="container mx-auto">
-                <Banner onViewChange={(t:string) => setViewMode(t)}/>
+                <Banner onViewChange={(t:string) => {
+                    setViewMode(t);
+                    if (t === 'all') {
+                        setEncodings([]);
+                    }
+                }} />
             </section>
             <section className="container mx-auto">
                 { viewMode === "mine" ? <GetMySmiles onGetEncodings={setEncodings} /> : ''}
