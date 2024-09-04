@@ -11,6 +11,10 @@ const router = createBrowserRouter([
         element: <App />,
         children: [
             {
+                path: "",
+                element: <p> Welcome Home</p>,
+            },
+            {
                 path: "/event/:eventId",
                 element: <EventDetail />,
             }
@@ -21,6 +25,7 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-          <RouterProvider router={router} />
+          <RouterProvider router={router}>
+          </RouterProvider>
   </StrictMode>,
 )
