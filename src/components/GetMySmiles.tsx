@@ -65,7 +65,7 @@ export default function GetMySmiles({onGetEncodings}: {onGetEncodings: Function}
         const frmData = new FormData();
         frmData.append("file", file);
 
-        fetch("http://localhost:8989/image/face_encodings", {
+        fetch(`${import.meta.env.VITE_ENCODING_BASE_URI}image/face_encodings`, {
             method: "POST",
             body: frmData,
         }).then(async res => {

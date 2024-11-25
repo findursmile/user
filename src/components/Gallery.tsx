@@ -16,7 +16,7 @@ function Gallery({encodings: encodings}: {encodings?: number[][]}) {
     const limit = 25;
 
     const getImages = () => {
-        const url = `http://localhost:8080/events/${urlParams.eventId}/images`;
+        const url = `${import.meta.env.VITE_API_BASE_URI}events/${urlParams.eventId}/images`;
         const params: {limit: number, page: number, encoding?: number[]} = {
             page: pageNo,
             limit
@@ -71,7 +71,7 @@ function Gallery({encodings: encodings}: {encodings?: number[][]}) {
                                 return (<div className="pb-3 max-w-full" key={img.id}>
                                     <img
                                         className={"rounded object-cover max-w-full " }
-                                        src={"http://localhost:8080/" + img.image_uri} />
+                                        src={import.meta.env.VITE_IMAGE_BASE_URI + img.image_uri} />
                                 </div>)})}
                         </div>
                     )
