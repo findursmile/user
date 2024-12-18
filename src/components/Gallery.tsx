@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { MediaViewer } from "./MediaViewer";
+import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 export interface IMAGE {
   id: string;
   image_uri: string;
@@ -64,35 +65,61 @@ function Gallery({ encodings: encodings }: { encodings?: number[][] }) {
     getImages();
   }, [pageNo, encodings]);
 
+  const handleDownload = async (imgUri: string) => {
+    const downloadUrl = import.meta.env.VITE_IMAGE_BASE_URI + imgUri;
+    try {
+      const response = await fetch(downloadUrl);
+      const blob = await response.blob();
+      const a = document.createElement("a");
+      const url = window.URL.createObjectURL(blob);
+      a.href = url;
+      a.download = imgUri.split("/").pop() || "download";
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error("Download failed:", error);
+    }
+  };
+
   return (
     <section className="mt-5">
       <div className="grid grid-cols-6 gap-4">
-        {chunkedImages
-          .concat(chunkedImages)
-          .concat(chunkedImages)
-          .map((images) => {
-            return (
-              <div className="flex flex-wrap gap-4">
-                {images.map((img) => {
-                  return (
-                    <div
-                      className=" max-w-full relative group cursor-pointer"
-                      key={img.id}
-                      onClick={() => setMediaViewer({ mediaId: img.id })}
-                    >
-                      <img
-                        className="rounded object-cover max-w-full"
-                        src={
-                          import.meta.env.VITE_IMAGE_BASE_URI + img.image_uri
-                        }
-                        alt="Media"
-                      />
+        {chunkedImages.map((images) => {
+          return (
+            <div className="flex flex-wrap gap-4">
+              {images.map((img) => {
+                return (
+                  <div
+                    className="max-w-full relative group cursor-pointer"
+                    key={img.id}
+                    onClick={() => setMediaViewer({ mediaId: img.id })}
+                  >
+                    <img
+                      className="rounded object-cover max-w-full"
+                      src={import.meta.env.VITE_IMAGE_BASE_URI + img.image_uri}
+                      alt="Media"
+                    />
+                    <div className="absolute inset-0 bg-gray-500 bg-opacity-50 rounded opacity-0 group-hover:opacity-100 flex justify-center items-center transition-opacity duration-200">
+                      <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <div
+                          className="flex items-center gap-2 p-2 rounded-full cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDownload(img.image_uri);
+                          }}
+                        >
+                          <ArrowDownTrayIcon className="h-6 w-6 text-white" />
+                        </div>
+                      </div>
                     </div>
-                  );
-                })}
-              </div>
-            );
-          })}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
       </div>
       <div className="text-center my-3">
         {hasMore && (
