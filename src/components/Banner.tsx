@@ -10,7 +10,7 @@ function Banner({onViewChange, event}: {onViewChange: Function, event?: {title: 
             <div className="absolute p-5 left-0 bottom-0 text-white">
                 <div className="flex align-center font-sm pb-2">
                     <CalendarIcon className="w-4 inline-block mr-1"/>
-                    {event?.event_date}
+                    {new Date(event?.event_date).toLocaleDateString()}
                 </div>
                 <h3 className="text-2xl font-bold">{event?.title}</h3>
                 <div className="flex gap-1">
