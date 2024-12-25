@@ -80,7 +80,7 @@ function Gallery({ encodings: encodings }: { encodings?: number[][] }) {
                       onClick={() => setMediaViewer({ mediaId: img.id })}
                     >
                       <img
-                        className="rounded object-cover max-w-full"
+                        className="rounded object-contain max-w-full"
                         src={
                           import.meta.env.VITE_IMAGE_BASE_URI + img.image_uri
                         }
