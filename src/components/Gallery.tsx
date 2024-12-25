@@ -69,7 +69,6 @@ function Gallery({ encodings: encodings }: { encodings?: number[][] }) {
       <div className="grid grid-cols-6 gap-4">
         {chunkedImages
           .concat(chunkedImages)
-          .concat(chunkedImages)
           .map((images) => {
             return (
               <div className="flex flex-wrap gap-4">
