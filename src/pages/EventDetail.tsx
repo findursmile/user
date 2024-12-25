@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 
 export default function EventDetail() {
     const [viewMode, setViewMode] = useState('all');
-    const [event, setEvent] = useState(null);
+    const [event, setEvent] = useState();
     const [encodings, setEncodings] = useState([]);
     const params = useParams();
 

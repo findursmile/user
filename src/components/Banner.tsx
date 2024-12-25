@@ -1,6 +1,12 @@
 import { CalendarIcon } from '@heroicons/react/24/outline'
 
-function Banner({onViewChange, event}: {onViewChange: Function, event?: {title: string}}) {
+interface EVENT {
+    title: string,
+    cover_photo: string,
+    event_date: string,
+}
+
+function Banner({onViewChange, event}: {onViewChange: Function, event?: EVENT}) {
   return (
     <>
         <section
@@ -10,7 +16,7 @@ function Banner({onViewChange, event}: {onViewChange: Function, event?: {title: 
             <div className="absolute p-5 left-0 bottom-0 text-white">
                 <div className="flex align-center font-sm pb-2">
                     <CalendarIcon className="w-4 inline-block mr-1"/>
-                    {new Date(event?.event_date).toLocaleDateString()}
+                    {event ? new Date(event.event_date).toLocaleDateString(): ''}
                 </div>
                 <h3 className="text-2xl font-bold">{event?.title}</h3>
                 <div className="flex gap-1">
